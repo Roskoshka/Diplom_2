@@ -1,4 +1,5 @@
 import allure
+from pytest_check import check
 
 import data
 import helpers
@@ -14,11 +15,11 @@ class TestCreateOrder:
         UserApi.login_user(body)
         response_create_order = OrderApi.create_order(data.CREATE_ORDER_BODY)
 
-        assert (
-                response_create_order.status_code == 200
-                and response_create_order.json()['success'] is True
-                and response_create_order.json()['name'] == data.CREATE_ORDER_NAME
-        )
+        assert response_create_order.status_code == 200
+        with check:
+            assert response_create_order.json()['success'] is True
+        with check:
+            assert response_create_order.json()['name'] == data.CREATE_ORDER_NAME
 
     @allure.title('Неуспешный заказ авторизованного пользователя с неверным хешем ингредиентов')
     @allure.description('Создание заказа с неверным хешем ингредиентов '
